@@ -8,15 +8,15 @@ import FoodCard from "../Components/FoodCard";
 import { useParams } from "react-router-dom";
 
 export default function Order() {
-  const categories = ["salad", "soup", "pizza", "dessert", "drinks"];
+  const categories = ["salad", "soup", "pizza", "desert", "drinks"];
   const { category } = useParams();
   const initialIndex = categories.indexOf(category);
   const [tabIndex, setTabIndex] = useState(initialIndex);
   const [menu] = useMenu();
-  const desserts = menu.filter((items) => items.category === "dessert");
   const salad = menu.filter((items) => items.category === "salad");
-  const pizza = menu.filter((items) => items.category === "pizza");
   const soup = menu.filter((items) => items.category === "soup");
+  const pizza = menu.filter((items) => items.category === "pizza");
+  const desserts = menu.filter((items) => items.category === "dessert");
   const drinks = menu.filter((items) => items.category === "drinks");
   return (
     <div>
@@ -26,7 +26,7 @@ export default function Order() {
           <Tab>Salad</Tab>
           <Tab>Soup</Tab>
           <Tab>Pizza</Tab>
-          <Tab>Dessert</Tab>
+          <Tab>Desserts</Tab>
           <Tab>Drinks</Tab>
         </TabList>
         <TabPanel>

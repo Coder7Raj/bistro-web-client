@@ -31,18 +31,18 @@ export default function Menu() {
       ></SectionTitle>
       <MenuCategory items={offered}></MenuCategory>
       {/*  */}
+      <MenuCategory items={salad} img={saladImg} title={"salad"}></MenuCategory>
+      {/*  */}
+      <MenuCategory items={soup} img={soupImg} title={"soup"}></MenuCategory>
+      {/*  */}
+      <MenuCategory items={pizza} img={pizzaImg} title={"pizza"}></MenuCategory>
+      {/*  */}
       <MenuCategory
         items={desserts}
         img={dessertImg}
         title={"desert"}
       ></MenuCategory>
       {/*  */}
-      <MenuCategory items={salad} img={saladImg} title={"salad"}></MenuCategory>
-
-      {/*  */}
-      <MenuCategory items={pizza} img={pizzaImg} title={"pizza"}></MenuCategory>
-      {/*  */}
-      <MenuCategory items={soup} img={soupImg} title={"soup"}></MenuCategory>
     </div>
   );
 }
