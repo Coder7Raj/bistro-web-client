@@ -1,16 +1,88 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import authinticationImg from "../assets/others/authentication.png";
 import authinticationImg2 from "../assets/others/authentication2.png";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { AuthContext } from "./AuthProvider";
 
 export default function Login() {
+  const { user, loginUser, handleGoogleLogin } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Successfully Loggedin by Google",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
+
+    loginUser(email, password)
+      .then((result) => {
+        if (result?.user) {
+          const lastSignInTime = result?.user?.metadata?.lastSignInTime;
+          const signInInfo = { email, lastSignInTime };
+          fetch("https://car-rent-server-wine.vercel.app/users", {
+            method: "PATCH",
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify(signInInfo),
+          })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
+          Swal.fire({
+            icon: "success",
+            title: "Welcome!",
+            text: "You have loggedIn successfully.",
+          });
+          navigate("/");
+        }
+      })
+
+      .catch((error) => {
+        if (error.code === "auth/invalid-email") {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Invalid email address.",
+          });
+        } else if (error.code === "auth/invalid-credential") {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Invalid password.",
+          });
+        } else if (error.code === "auth/user-not-found") {
+          Swal.fire({
+            icon: "warning",
+            title: "Error",
+            text: "No user found with this email.",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Login failed",
+            text: error.message,
+          });
+        }
+      });
+  };
+  const handleLogingoogle = () => {
+    handleGoogleLogin();
   };
   return (
     <div
@@ -61,6 +133,15 @@ export default function Login() {
               {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
           </div>
+          <div className="mb-6 relative">
+            <label className="block text-base font-medium text-gray-800 mb-2">
+              Password
+            </label>
+            <input
+              name="captcha"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
           <div className="mb-6">
             <button
               type="submit"
@@ -71,7 +152,7 @@ export default function Login() {
           </div>
           <div className="mb-6">
             <button
-              // onClick={handleLogingoogle}
+              onClick={handleLogingoogle}
               type="button"
               className="w-full flex items-center justify-center gap-2 bg-red-600 text-white py-3 rounded-lg font-medium hover:bg-red-700 transition duration-300"
             >
