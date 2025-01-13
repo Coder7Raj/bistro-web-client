@@ -1,6 +1,3 @@
-import React, { createContext, useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import auth from "./Firebase/firebase.init";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
@@ -10,66 +7,53 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+import React, { createContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import auth from "./Firebase/firebase.init";
 
 export const AuthContext = createContext("");
-
-export default function AuthProvider({ children }) {
+const Authprovider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loader, setLoader] = useState(true);
 
-  // Register User
   const registerUser = (email, password) => {
     setLoader(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
-
-  // Login User
   const loginUser = (email, password) => {
     setLoader(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
-
-  // Track Auth State
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser || null);
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
+      }
       setLoader(false);
     });
-
-    return () => unSubscribe();
+    return () => {
+      unSubscribe();
+    };
   }, []);
 
-  // Logout User
   const logoutUser = () => {
-    setLoader(true);
-    return signOut(auth)
-      .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "You have signed out successfully.",
-        });
-        setUser(null);
+    return signOut(auth);
+  };
+
+  const provider = new GoogleAuthProvider();
+  const handleGoogleLogin = () => {
+    signInWithPopup(auth, provider)
+      .then((res) => {
+        setUser(res.user);
+        setLoader(false);
       })
       .catch((error) => {
-        console.error("Logout Error:", error);
-      })
-      .finally(() => setLoader(false));
+        console.log("ERROR", error);
+        setLoader(false);
+      });
   };
-
-  // Google Login
-  const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      setUser(user); // Set user in state
-    } catch (error) {
-      console.error("Google login failed:", error);
-    }
-  };
-
-  // Google Sign Out
   const handleGoogleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -86,8 +70,6 @@ export default function AuthProvider({ children }) {
         setLoader(false);
       });
   };
-
-  // Update User Profile
   const updateUserProfile = async (updatedData, setUser) => {
     try {
       await updateProfile(auth.currentUser, updatedData);
@@ -101,7 +83,6 @@ export default function AuthProvider({ children }) {
     }
   };
 
-  // Context Value
   const userInfo = {
     user,
     loader,
@@ -117,4 +98,6 @@ export default function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={userInfo}>{children}</AuthContext.Provider>
   );
-}
+};
+
+export default Authprovider;

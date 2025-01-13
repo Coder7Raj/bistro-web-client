@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import authinticationImg from "../assets/others/authentication.png";
-import authinticationImg2 from "../assets/others/authentication2.png";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import logImg from "../assets/others/authentication2.png";
 import { AuthContext } from "./AuthProvider";
 
-export default function Login() {
+const Login = () => {
   const { user, loginUser, handleGoogleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +33,7 @@ export default function Login() {
         if (result?.user) {
           const lastSignInTime = result?.user?.metadata?.lastSignInTime;
           const signInInfo = { email, lastSignInTime };
-          fetch("https://car-rent-server-wine.vercel.app/users", {
+          fetch("http://localhost:5000/users", {
             method: "PATCH",
             headers: {
               "content-type": "application/json",
@@ -84,16 +83,12 @@ export default function Login() {
   const handleLogingoogle = () => {
     handleGoogleLogin();
   };
+
   return (
-    <div
-      style={{
-        backgroundImage: `${authinticationImg}`,
-      }}
-      className="lg:flex-row md:flex-row flex justify-center items-center flex-col gap-4 pt-20 p-4"
-    >
+    <div className="lg:flex-row md:flex-row flex justify-center items-center flex-col gap-4 p-4">
       <div className="lg:w-1/2 md:w-1/2 w-full">
         <div>
-          <img className="w-full h-full" src={authinticationImg2} alt="" />
+          <img src={logImg} alt="" />
         </div>
       </div>
       <div className="lg:w-1/2 md:w-1/2 w-full h-auto px-6 py-4 flex flex-col justify-center items-center bg-white shadow-lg rounded-lg">
@@ -133,15 +128,6 @@ export default function Login() {
               {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
           </div>
-          <div className="mb-6 relative">
-            <label className="block text-base font-medium text-gray-800 mb-2">
-              Password
-            </label>
-            <input
-              name="captcha"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
           <div className="mb-6">
             <button
               type="submit"
@@ -169,4 +155,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;

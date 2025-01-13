@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import regImg from "../assets/others/authentication.gif";
 import { AuthContext } from "./AuthProvider";
-import registerBack from "../assets/others/authentication.gif";
 
-export default function Register() {
+const Register = () => {
   const { user, registerUser, setUser, handleGoogleLogin, updateUserProfile } =
     useContext(AuthContext);
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ export default function Register() {
           const createdUser = result?.user?.metadata?.creationTime;
           const newUser = { name, email, createdUser };
 
-          fetch("https://car-rent-server-wine.vercel.app/users", {
+          fetch("http://localhost:5000/users", {
             method: "POST",
             headers: {
               "content-type": "application/json",
@@ -77,11 +77,12 @@ export default function Register() {
   const handleRegisterGoogle = () => {
     handleGoogleLogin();
   };
+
   return (
     <div className="lg:flex-row md:flex-row flex justify-center items-center flex-col gap-4 p-4">
       <div className="lg:w-1/2 md:w-1/2 w-full">
         <div>
-          <img className="h-full w-full" src={registerBack} alt="" />
+          <img src={regImg} alt="" />
         </div>
       </div>
       <div className="lg:w-1/2 md:w-1/2 w-full h-auto px-6 py-4 flex flex-col justify-center items-center bg-white shadow-lg rounded-lg">
@@ -190,4 +191,6 @@ export default function Register() {
       </div>
     </div>
   );
-}
+};
+
+export default Register;
