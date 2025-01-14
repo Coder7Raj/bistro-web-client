@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LoadCanvasTemplate,
   loadCaptchaEnginge,
@@ -16,6 +16,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const captchaRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+  console.log(location.state);
 
   useEffect(() => {
     loadCaptchaEnginge(6);
@@ -58,7 +61,7 @@ const Login = () => {
             title: "Welcome!",
             text: "You have loggedIn successfully.",
           });
-          navigate("/");
+          navigate("/", { state: { from: from } });
         }
       })
 

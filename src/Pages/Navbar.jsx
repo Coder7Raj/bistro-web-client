@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
+import { FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.jpg";
-import { FaRegUserCircle } from "react-icons/fa";
 import { AuthContext } from "../Auth/AuthProvider";
 
 export default function Navbar() {
@@ -123,6 +123,12 @@ export default function Navbar() {
               }
             >
               Order Now
+            </NavLink>
+            <NavLink>
+              <button className="bg-white w-20 rounded-md flex justify-center items-center py-1">
+                <FaShoppingCart className="mr-2" />
+                <div className="badge badge-secondary">+99</div>
+              </button>
             </NavLink>
           </ul>
         </div>
