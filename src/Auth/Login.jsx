@@ -18,7 +18,6 @@ const Login = () => {
   const [disabled, setDisabled] = useState(true);
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  console.log(location.state);
 
   useEffect(() => {
     loadCaptchaEnginge(6);

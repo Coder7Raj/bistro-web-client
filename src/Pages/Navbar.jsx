@@ -3,10 +3,12 @@ import { FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import { AuthContext } from "../Auth/AuthProvider";
+import useCart from "../Hooks/useCart";
 
 export default function Navbar() {
   const { user, logoutUser, handleGoogleSignOut } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [cart] = useCart();
 
   const handleLogout = async (user) => {
     try {
@@ -127,7 +129,7 @@ export default function Navbar() {
             <NavLink>
               <button className="bg-white w-20 rounded-md flex justify-center items-center py-1">
                 <FaShoppingCart className="mr-2" />
-                <div className="badge badge-secondary">+99</div>
+                <div className="badge badge-secondary">+{cart.length}</div>
               </button>
             </NavLink>
           </ul>
